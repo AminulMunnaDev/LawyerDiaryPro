@@ -92,6 +92,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.lawyerdiarypro.ui.Screen
+import com.example.lawyerdiarypro.ui.presentation.custom.SetStatusBarColor
+import com.example.lawyerdiarypro.ui.presentation.profile.StatCard
 import com.example.lawyerdiarypro.ui.theme.Amber
 import com.example.lawyerdiarypro.ui.theme.BorderLight
 import com.example.lawyerdiarypro.ui.theme.DeepBlue
@@ -114,29 +116,20 @@ fun CreateCaseScreen(
     caseId: Int? = null,
     viewModel: CreateCaseViewModel = viewModel()
 ) {
+    SetStatusBarColor(
+        statusBarColor = Color.Transparent,
+        darkIcons = false
+    )
     val state = viewModel.state
     val datePickerState = rememberDatePickerState()
     var showDatePicker by remember { mutableStateOf(false) }
 
-    // Animation states
-    val screenAnimation = remember { Animatable(0f) }
-    val fieldsAnimation = remember { Animatable(0f) }
+
 
     LaunchedEffect(caseId) {
         if (caseId != null && caseId != -1) {
             viewModel.loadCaseForEditing(caseId)
         }
-
-        // Start animations
-        screenAnimation.animateTo(
-            targetValue = 1f,
-            animationSpec = tween(600, easing = FastOutSlowInEasing)
-        )
-        delay(200)
-        fieldsAnimation.animateTo(
-            targetValue = 1f,
-            animationSpec = tween(800, easing = FastOutSlowInEasing)
-        )
     }
 
     Scaffold(
@@ -152,7 +145,7 @@ fun CreateCaseScreen(
                 navigationIcon = {
                     IconButton(
                         onClick = { navController.popBackStack() },
-                        modifier = Modifier.scale(screenAnimation.value)
+                        modifier = Modifier.scale(0.95f)
                     ) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
@@ -176,8 +169,7 @@ fun CreateCaseScreen(
                 .fillMaxSize()
                 .padding(padding)
                 .padding(horizontal = 20.dp)
-                .verticalScroll(rememberScrollState())
-                .alpha(screenAnimation.value),
+                .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Spacer(modifier = Modifier.height(8.dp))
@@ -196,12 +188,12 @@ fun CreateCaseScreen(
                 isError = state.isTitleError,
                 icon = Icons.Default.Description,
                 iconColor = DeepBlue,
-                modifier = Modifier.alpha(fieldsAnimation.value)
+
             )
 
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.alpha(fieldsAnimation.value)
+
             ) {
                 Box(modifier = Modifier.weight(1f)) {
                     CaseInputField(
@@ -217,7 +209,7 @@ fun CreateCaseScreen(
                         selectedType = state.caseType,
                         options = viewModel.caseTypes,
                         onSelect = { viewModel.onEvent(CreateCaseEvent.TypeChanged(it)) },
-                        modifier = Modifier.alpha(fieldsAnimation.value)
+
                     )
                 }
             }
@@ -228,7 +220,7 @@ fun CreateCaseScreen(
                 label = "Court Name*",
                 icon = Icons.Default.Gavel,
                 iconColor = DeepBlue,
-                modifier = Modifier.alpha(fieldsAnimation.value)
+
             )
 
             // Date Picker Card with animation
@@ -236,7 +228,7 @@ fun CreateCaseScreen(
                 onClick = { showDatePicker = true },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .alpha(fieldsAnimation.value)
+
                     .animateContentSize(),
                 shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.outlinedCardColors(
@@ -299,7 +291,7 @@ fun CreateCaseScreen(
 
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.alpha(fieldsAnimation.value)
+
             ) {
                 Box(modifier = Modifier.weight(1f)) {
                     CaseInputField(
@@ -327,7 +319,7 @@ fun CreateCaseScreen(
                 label = "Party Name (v/s)",
                 icon = Icons.Default.People,
                 iconColor = SlateBlue,
-                modifier = Modifier.alpha(fieldsAnimation.value)
+
             )
 
             CaseInputField(
@@ -336,12 +328,12 @@ fun CreateCaseScreen(
                 label = "Appearing For",
                 icon = Icons.Default.Badge,
                 iconColor = SlateBlue,
-                modifier = Modifier.alpha(fieldsAnimation.value)
+
             )
 
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.alpha(fieldsAnimation.value)
+
             ) {
                 Box(modifier = Modifier.weight(1f)) {
                     CaseInputField(
@@ -378,8 +370,8 @@ fun CreateCaseScreen(
 
             Surface(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .alpha(fieldsAnimation.value),
+                    .fillMaxWidth(),
+
                 shape = RoundedCornerShape(16.dp),
                 color = White,
                 border = BorderStroke(1.dp, BorderLight),
@@ -438,7 +430,7 @@ fun CreateCaseScreen(
                 label = "Acts & Sections",
                 icon = Icons.AutoMirrored.Filled.MenuBook,
                 iconColor = DeepBlue,
-                modifier = Modifier.alpha(fieldsAnimation.value)
+
             )
 
             // --- CLIENT INFO ---
@@ -454,7 +446,7 @@ fun CreateCaseScreen(
                 label = "Client Name*",
                 icon = Icons.Default.Person,
                 iconColor = Emerald,
-                modifier = Modifier.alpha(fieldsAnimation.value)
+
             )
 
             CaseInputField(
@@ -466,14 +458,14 @@ fun CreateCaseScreen(
                 isError = state.isPhoneError,
                 supportingText = if (state.isPhoneError) "Please enter a valid phone number" else null,
                 keyboardType = KeyboardType.Phone,
-                modifier = Modifier.alpha(fieldsAnimation.value)
+
             )
 
             // Importance Switch with animation
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .alpha(fieldsAnimation.value),
+                    ,
                 shape = RoundedCornerShape(12.dp),
                 color = White,
                 border = BorderStroke(1.dp, BorderLight)
@@ -520,14 +512,14 @@ fun CreateCaseScreen(
                 label = "Private Notes",
                 icon = Icons.Default.Note,
                 iconColor = SlateBlue,
-                modifier = Modifier.alpha(fieldsAnimation.value),
+
                 singleLine = false,
                 maxLines = 3
             )
 
             // File Upload Section
             FileUploadSection(
-                modifier = Modifier.alpha(fieldsAnimation.value)
+
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -544,7 +536,7 @@ fun CreateCaseScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp)
-                    .scale(if (fieldsAnimation.value == 1f) 1f else 0.9f),
+                   ,
                 shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = DeepBlue,
@@ -758,6 +750,10 @@ fun CaseTypeDropdown(
                     color = if (selectedType.isBlank()) TextMuted else DeepBlue
                 )
             },
+            textStyle = MaterialTheme.typography.bodyLarge.copy( // <-- CHANGED HERE (added this line)
+                color = DeepBlue, // <-- CHANGED HERE (added this line)
+                fontWeight = FontWeight.Normal
+            ),
             trailingIcon = {
                 Box(
                     modifier = Modifier

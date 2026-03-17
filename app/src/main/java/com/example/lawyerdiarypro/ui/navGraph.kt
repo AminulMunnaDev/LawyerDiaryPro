@@ -1,6 +1,7 @@
 package com.example.lawyerdiarypro.ui
 
 
+import HomeScreen
 import android.annotation.SuppressLint
 import androidx.compose.animation.*
 import androidx.compose.animation.core.FiniteAnimationSpec
@@ -16,7 +17,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.lawyerdiarypro.ui.presentation.home.Case.CaseDetailsScreen
 import com.example.lawyerdiarypro.ui.presentation.home.Case.CreateCaseScreen
-import com.example.lawyerdiarypro.ui.presentation.home.HomeScreen
 import com.example.lawyerdiarypro.ui.presentation.Login.SignInScreen
 import com.example.lawyerdiarypro.ui.presentation.Login.SignUpScreen
 import com.example.lawyerdiarypro.ui.presentation.Login.SplashScreen

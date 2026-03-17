@@ -44,58 +44,12 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun WelcomeScreen(navController: NavHostController) {
-    val animatedProgress = remember { Animatable(0f) }
-    val buttonScale = remember { Animatable(0f) }
-    val featureSlideOffset = remember { Animatable(50f) }
-
 
     SetStatusBarColor(
         statusBarColor = Color.Transparent,
-        darkIcons = true // For light backgrounds
+        darkIcons = true
     )
-    LaunchedEffect(key1 = true) {
-        coroutineScope {
-            // Parallel animations for a more fluid feel
 
-            // Logo and title - smooth fade and scale together
-            launch {
-                animatedProgress.animateTo(
-                    targetValue = 1f,
-                    animationSpec = tween(
-                        durationMillis = 800,
-                        easing = CubicBezierEasing(0.2f, 0.0f, 0.0f, 1.0f) // Very smooth custom easing
-                    )
-                )
-            }
-
-            // Feature items - gentle slide with subtle bounce
-            launch {
-                delay(150)
-                featureSlideOffset.animateTo(
-                    targetValue = 0f,
-                    animationSpec = spring(
-                        dampingRatio = 0.7f, // Less bounce
-                        stiffness = Spring.StiffnessVeryLow, // Very smooth
-                        visibilityThreshold = 1f // Prevents micro-movements at the end
-                    )
-                )
-            }
-
-            // Buttons - smooth fade-in with slight scale
-            launch {
-                delay(300)
-                buttonScale.animateTo(
-                    targetValue = 1f,
-                    animationSpec = tween(
-                        durationMillis = 500,
-                        easing = FastOutLinearInEasing // Smooth acceleration then linear
-                    )
-                )
-            }
-        }
-    }
-
-    // Professional gradient background
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -114,20 +68,18 @@ fun WelcomeScreen(navController: NavHostController) {
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .statusBarsPadding() // Keeps content below status bar
-                .navigationBarsPadding() // Keeps content above bottom navigation bar
+                .statusBarsPadding()
+                .navigationBarsPadding()
                 .padding(horizontal = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center // Changed back to Center for perfect centering
+            verticalArrangement = Arrangement.Center
         ) {
-            // Logo - Using Deep Blue (smaller)
+
+            // Logo
             Surface(
                 color = DeepBlue.copy(alpha = 0.1f),
                 shape = CircleShape,
-                modifier = Modifier
-                    .size(100.dp)
-                    .scale(animatedProgress.value)
-                    .alpha(animatedProgress.value)
+                modifier = Modifier.size(100.dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.Balance,
@@ -141,7 +93,7 @@ fun WelcomeScreen(navController: NavHostController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // App Title with gradient (smaller)
+            // Title
             Text(
                 text = "Lawyer Diary Pro",
                 style = MaterialTheme.typography.headlineMedium,
@@ -149,16 +101,13 @@ fun WelcomeScreen(navController: NavHostController) {
                 textAlign = TextAlign.Center,
                 fontSize = 28.sp,
                 letterSpacing = 0.5.sp,
-                modifier = Modifier
-                    .scale(animatedProgress.value)
-                    .alpha(animatedProgress.value)
-                    .fillMaxWidth(), // Added to ensure full width for centering
+                modifier = Modifier.fillMaxWidth(),
                 color = DeepBlue
             )
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            // Decorative line (centered)
+            // Decorative Line
             Box(
                 modifier = Modifier
                     .fillMaxWidth(0.25f)
@@ -172,13 +121,11 @@ fun WelcomeScreen(navController: NavHostController) {
                             )
                         )
                     )
-                    .scale(animatedProgress.value)
-                    .align(Alignment.CenterHorizontally) // Explicitly center the decorative line
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Subtitle (smaller)
+            // Subtitle
             Text(
                 text = "Your Professional Case Management Solution",
                 style = MaterialTheme.typography.bodyMedium,
@@ -187,64 +134,35 @@ fun WelcomeScreen(navController: NavHostController) {
                 fontSize = 14.sp,
                 letterSpacing = 0.3.sp,
                 modifier = Modifier
-                    .scale(animatedProgress.value)
-                    .alpha(animatedProgress.value)
-                    .fillMaxWidth() // Added to ensure full width for centering
+                    .fillMaxWidth()
                     .padding(horizontal = 16.dp)
             )
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Features with slide animation (smaller and tighter spacing)
+            // Features
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 8.dp)
-                    .alpha(animatedProgress.value)
             ) {
-                FeatureItem(
-                    Icons.AutoMirrored.Filled.Assignment,
-                    "Manage Cases Efficiently",
-                    DeepBlue,
-                    Emerald,
-                    smaller = true
-                )
-                FeatureItem(
-                    Icons.Default.People,
-                    "Track Client Information",
-                    SlateBlue,
-                    InfoBlue,
-                    smaller = true
-                )
-                FeatureItem(
-                    Icons.Default.Event,
-                    "Schedule Appointments",
-                    DeepBlue,
-                    Amber,
-                    smaller = true
-                )
-                FeatureItem(
-                    Icons.Default.Description,
-                    "Document Management",
-                    SlateBlue,
-                    SuccessGreen,
-                    smaller = true
-                )
+                FeatureItem(Icons.AutoMirrored.Filled.Assignment, "Manage Cases Efficiently", DeepBlue, Emerald, smaller = true)
+                FeatureItem(Icons.Default.People, "Track Client Information", SlateBlue, InfoBlue, smaller = true)
+                FeatureItem(Icons.Default.Event, "Schedule Appointments", DeepBlue, Amber, smaller = true)
+                FeatureItem(Icons.Default.Description, "Document Management", SlateBlue, SuccessGreen, smaller = true)
             }
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            // Action Buttons
+            // Buttons
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .scale(buttonScale.value)
+                modifier = Modifier.fillMaxWidth()
             ) {
-                // Primary Action: Deep Blue gradient button
+
                 Button(
                     onClick = { navController.navigate(Screen.SignUp.route) },
                     modifier = Modifier
@@ -254,23 +172,15 @@ fun WelcomeScreen(navController: NavHostController) {
                     colors = ButtonDefaults.buttonColors(
                         containerColor = DeepBlue,
                         contentColor = White
-                    ),
-                    elevation = ButtonDefaults.buttonElevation(
-                        defaultElevation = 2.dp,
-                        pressedElevation = 4.dp
                     )
                 ) {
                     Text(
                         "Get Started",
-                        style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.SemiBold,
-                        fontSize = 15.sp,
-                        letterSpacing = 0.5.sp,
-                        textAlign = TextAlign.Center // Ensure text is centered within button
+                        fontSize = 15.sp
                     )
                 }
 
-                // Secondary Action: Outlined with Slate Blue
                 OutlinedButton(
                     onClick = { navController.navigate(Screen.SignIn.route) },
                     modifier = Modifier
@@ -284,30 +194,24 @@ fun WelcomeScreen(navController: NavHostController) {
                 ) {
                     Text(
                         "Sign In",
-                        style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.SemiBold,
-                        fontSize = 15.sp,
-                        letterSpacing = 0.5.sp,
-                        textAlign = TextAlign.Center // Ensure text is centered within button
+                        fontSize = 15.sp
                     )
                 }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Footer text
+            // Footer
             Text(
                 text = "By continuing, you agree to our Terms of Service",
                 style = MaterialTheme.typography.labelSmall,
                 color = TextMuted,
                 textAlign = TextAlign.Center,
                 fontSize = 11.sp,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .alpha(0.7f)
+                modifier = Modifier.fillMaxWidth()
             )
 
-            // Small bottom spacer for breathing room
             Spacer(modifier = Modifier.height(16.dp))
         }
     }

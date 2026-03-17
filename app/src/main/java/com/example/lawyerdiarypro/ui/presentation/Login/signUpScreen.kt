@@ -89,52 +89,18 @@ fun SignUpScreen(navController: NavHostController) {
     var passwordVisible by remember { mutableStateOf(false) }
     var confirmPasswordVisible by remember { mutableStateOf(false) }
 
-    val animatedProgress = remember { Animatable(0f) }
-    val fieldAnimations = List(4) { remember { Animatable(0f) } }
-    val buttonScale = remember { Animatable(0.8f) }
-
     SetStatusBarColor(
         statusBarColor = Color.Transparent,
         darkIcons = true
     )
 
-    LaunchedEffect(key1 = true) {
-        // Main content fade-in
-        animatedProgress.animateTo(
-            targetValue = 1f,
-            animationSpec = tween(800, easing = FastOutSlowInEasing)
-        )
-
-        // Animate fields sequentially
-        fieldAnimations.forEachIndexed { index, animatable ->
-            delay(index * 150L)
-            animatable.animateTo(
-                targetValue = 1f,
-                animationSpec = tween(600, easing = FastOutSlowInEasing)
-            )
-        }
-
-        // Button bounce
-        buttonScale.animateTo(
-            targetValue = 1f,
-            animationSpec = spring(
-                dampingRatio = Spring.DampingRatioMediumBouncy,
-                stiffness = Spring.StiffnessLow
-            )
-        )
-    }
-
-    // Scaffold with white background
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {},
                 navigationIcon = {
                     IconButton(
-                        onClick = { navController.popBackStack() },
-                        modifier = Modifier
-                            .scale(1f)
-                            .animateContentSize()
+                        onClick = { navController.popBackStack() }
                     ) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
@@ -148,12 +114,13 @@ fun SignUpScreen(navController: NavHostController) {
                 )
             )
         },
-        containerColor = Color.White // This sets the background color of the Scaffold
+        containerColor = Color.White
     ) { paddingValues ->
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White) // Also set background here to be safe
+                .background(Color.White)
                 .padding(paddingValues)
                 .padding(horizontal = 24.dp)
                 .verticalScroll(rememberScrollState())
@@ -162,21 +129,19 @@ fun SignUpScreen(navController: NavHostController) {
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.Top
         ) {
+
             Spacer(modifier = Modifier.height(20.dp))
 
-            // Header with gradient line
+            // Header
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .alpha(animatedProgress.value)
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
                     text = "Create Account",
                     style = MaterialTheme.typography.headlineLarge,
                     fontWeight = FontWeight.ExtraBold,
                     color = DeepBlue,
-                    fontSize = 40.sp,
-                    letterSpacing = 0.5.sp
+                    fontSize = 40.sp
                 )
 
                 Spacer(modifier = Modifier.height(4.dp))
@@ -187,10 +152,7 @@ fun SignUpScreen(navController: NavHostController) {
                         .height(4.dp)
                         .background(
                             Brush.horizontalGradient(
-                                colors = listOf(
-                                    Emerald,
-                                    DeepBlue
-                                )
+                                colors = listOf(Emerald, DeepBlue)
                             )
                         )
                 )
@@ -201,100 +163,73 @@ fun SignUpScreen(navController: NavHostController) {
                     text = "Join Lawyer Diary Pro to manage your practice.",
                     style = MaterialTheme.typography.bodyLarge,
                     color = TextSecondary,
-                    fontSize = 16.sp,
-                    letterSpacing = 0.3.sp
+                    fontSize = 16.sp
                 )
             }
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            // Username Field with animation
-            Box(
-                modifier = Modifier
-                    .scale(fieldAnimations[0].value)
-                    .alpha(fieldAnimations[0].value)
-                    .fillMaxWidth()
-            ) {
-                SignUpTextField(
-                    value = username,
-                    onValueChange = { username = it },
-                    label = "Full Name",
-                    icon = Icons.Default.Person,
-                    iconColor = DeepBlue
-                )
-            }
+            // Username
+            SignUpTextField(
+                value = username,
+                onValueChange = { username = it },
+                label = "Full Name",
+                icon = Icons.Default.Person,
+                iconColor = DeepBlue
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Email Field with animation
-            Box(
-                modifier = Modifier
-                    .scale(fieldAnimations[1].value)
-                    .alpha(fieldAnimations[1].value)
-                    .fillMaxWidth()
-            ) {
-                SignUpTextField(
-                    value = email,
-                    onValueChange = { email = it },
-                    label = "Email Address",
-                    icon = Icons.Default.Email,
-                    keyboardType = KeyboardType.Email,
-                    iconColor = SlateBlue
-                )
-            }
+            // Email
+            SignUpTextField(
+                value = email,
+                onValueChange = { email = it },
+                label = "Email Address",
+                icon = Icons.Default.Email,
+                keyboardType = KeyboardType.Email,
+                iconColor = SlateBlue
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Password Field with animation
-            Box(
-                modifier = Modifier
-                    .scale(fieldAnimations[2].value)
-                    .alpha(fieldAnimations[2].value)
-                    .fillMaxWidth()
-            ) {
-                SignUpTextField(
-                    value = password,
-                    onValueChange = { password = it },
-                    label = "Password",
-                    icon = Icons.Default.Lock,
-                    isPassword = true,
-                    isVisible = passwordVisible,
-                    onVisibilityChange = { passwordVisible = !passwordVisible },
-                    iconColor = DeepBlue
-                )
-            }
+            // Password
+            SignUpTextField(
+                value = password,
+                onValueChange = { password = it },
+                label = "Password",
+                icon = Icons.Default.Lock,
+                isPassword = true,
+                isVisible = passwordVisible,
+                onVisibilityChange = { passwordVisible = !passwordVisible },
+                iconColor = DeepBlue
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Confirm Password Field with animation
-            Box(
-                modifier = Modifier
-                    .scale(fieldAnimations[3].value)
-                    .alpha(fieldAnimations[3].value)
-                    .fillMaxWidth()
-            ) {
-                val passwordsMatch = password == confirmPassword || confirmPassword.isEmpty()
-                SignUpTextField(
-                    value = confirmPassword,
-                    onValueChange = { confirmPassword = it },
-                    label = "Confirm Password",
-                    icon = Icons.Default.Lock,
-                    isPassword = true,
-                    isVisible = confirmPasswordVisible,
-                    onVisibilityChange = { confirmPasswordVisible = !confirmPasswordVisible },
-                    isError = !passwordsMatch && confirmPassword.isNotEmpty(),
-                    supportingText = if (!passwordsMatch && confirmPassword.isNotEmpty()) "Passwords do not match" else null,
-                    iconColor = if (!passwordsMatch && confirmPassword.isNotEmpty()) Rose else SlateBlue
-                )
-            }
+            // Confirm Password
+            val passwordsMatch = password == confirmPassword || confirmPassword.isEmpty()
+
+            SignUpTextField(
+                value = confirmPassword,
+                onValueChange = { confirmPassword = it },
+                label = "Confirm Password",
+                icon = Icons.Default.Lock,
+                isPassword = true,
+                isVisible = confirmPasswordVisible,
+                onVisibilityChange = { confirmPasswordVisible = !confirmPasswordVisible },
+                isError = !passwordsMatch && confirmPassword.isNotEmpty(),
+                supportingText = if (!passwordsMatch && confirmPassword.isNotEmpty())
+                    "Passwords do not match" else null,
+                iconColor = if (!passwordsMatch && confirmPassword.isNotEmpty())
+                    Rose else SlateBlue
+            )
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Password requirements indicator
+            // Password requirements
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .alpha(fieldAnimations[3].value)
                     .padding(horizontal = 4.dp)
             ) {
                 Text(
@@ -325,58 +260,43 @@ fun SignUpScreen(navController: NavHostController) {
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Sign Up Button with animation
-            Box(
+            // Button
+            Button(
+                onClick = {
+                    navController.navigate(Screen.Home.route)
+                },
                 modifier = Modifier
-                    .scale(buttonScale.value)
                     .fillMaxWidth()
+                    .height(56.dp),
+                shape = RoundedCornerShape(16.dp),
+                enabled = username.isNotBlank() &&
+                        email.isNotBlank() &&
+                        password.length >= 6 &&
+                        password == confirmPassword,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = DeepBlue,
+                    contentColor = White,
+                    disabledContainerColor = DeepBlue.copy(alpha = 0.4f),
+                    disabledContentColor = White.copy(alpha = 0.7f)
+                )
             ) {
-                Button(
-                    onClick = {
-                        // Add ripple effect on click
-                        navController.navigate(Screen.Home.route)
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
-                    shape = RoundedCornerShape(16.dp),
-                    enabled = username.isNotBlank() && email.isNotBlank() &&
-                            password.length >= 6 && password == confirmPassword,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = DeepBlue,
-                        contentColor = White,
-                        disabledContainerColor = DeepBlue.copy(alpha = 0.4f),
-                        disabledContentColor = White.copy(alpha = 0.7f)
-                    ),
-                    elevation = ButtonDefaults.buttonElevation(
-                        defaultElevation = 2.dp,
-                        pressedElevation = 4.dp,
-                        disabledElevation = 0.dp
-                    )
-                ) {
-                    Text(
-                        "Create Account",
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 18.sp,
-                        letterSpacing = 0.5.sp
-                    )
-                }
+                Text(
+                    "Create Account",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.SemiBold
+                )
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Sign In Link
+            // Sign In link
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .alpha(fieldAnimations[3].value),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     "Already have an account?",
-                    style = MaterialTheme.typography.bodyMedium,
                     color = TextSecondary
                 )
                 TextButton(
@@ -385,11 +305,7 @@ fun SignUpScreen(navController: NavHostController) {
                         contentColor = Emerald
                     )
                 ) {
-                    Text(
-                        "Sign In",
-                        fontWeight = FontWeight.ExtraBold,
-                        fontSize = 16.sp
-                    )
+                    Text("Sign In", fontWeight = FontWeight.Bold)
                 }
             }
 

@@ -90,67 +90,41 @@ fun SignInScreen(navController: NavHostController) {
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
 
-    val animatedOffset = remember { Animatable(0f) }
-    val fieldAnimations = List(2) { remember { Animatable(0f) } }
-    val buttonScale = remember { Animatable(0.8f) }
-
-    // For demo purposes - showing validation
     val isValidEmail = email.contains("@") && email.contains(".")
     val isValidPassword = password.length >= 6
 
     SetStatusBarColor(
-        statusBarColor = Color.Transparent, darkIcons = true
+        statusBarColor = Color.Transparent,
+        darkIcons = true
     )
 
-    LaunchedEffect(key1 = true) {
-        // Main content slide-up animation
-        animatedOffset.animateTo(
-            targetValue = 1f, animationSpec = spring(
-                dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow
-            )
-        )
-
-        // Animate fields sequentially
-        fieldAnimations.forEachIndexed { index, animatable ->
-            delay(index * 100L)
-            animatable.animateTo(
-                targetValue = 1f, animationSpec = tween(400, easing = FastOutSlowInEasing)
-            )
-        }
-
-        // Button bounce animation
-        buttonScale.animateTo(
-            targetValue = 1f, animationSpec = spring(
-                dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow
-            )
-        )
-    }
-
-    // White background - Option 1: Set on Scaffold's containerColor
     Scaffold(
         topBar = {
             TopAppBar(
-                title = {}, navigationIcon = {
-                IconButton(
-                    onClick = { navController.popBackStack() },
-                    modifier = Modifier
-                        .scale(1f)
-                        .animateContentSize()
-                ) {
-                    Icon(
-                        Icons.Default.ArrowBack, contentDescription = "Back", tint = DeepBlue
-                    )
-                }
-            }, colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = Color.Transparent
+                title = {},
+                navigationIcon = {
+                    IconButton(
+                        onClick = { navController.popBackStack() }
+                    ) {
+                        Icon(
+                            Icons.Default.ArrowBack,
+                            contentDescription = "Back",
+                            tint = DeepBlue
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Transparent
+                )
             )
-            )
-        }, containerColor = Color.White // This sets the background color of the Scaffold
+        },
+        containerColor = Color.White
     ) { paddingValues ->
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White) // Also set background here to be safe
+                .background(Color.White)
                 .padding(paddingValues)
                 .padding(horizontal = 24.dp)
                 .verticalScroll(rememberScrollState())
@@ -159,22 +133,19 @@ fun SignInScreen(navController: NavHostController) {
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.Top
         ) {
-            // Rest of your content...
+
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Header with welcome message
+            // Header
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .scale(animatedOffset.value)
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
                     text = "Welcome Back",
                     style = MaterialTheme.typography.headlineLarge,
                     fontWeight = FontWeight.ExtraBold,
                     color = DeepBlue,
-                    fontSize = 42.sp,
-                    letterSpacing = 0.5.sp
+                    fontSize = 42.sp
                 )
 
                 Spacer(modifier = Modifier.height(4.dp))
@@ -185,9 +156,7 @@ fun SignInScreen(navController: NavHostController) {
                         .height(4.dp)
                         .background(
                             Brush.horizontalGradient(
-                                colors = listOf(
-                                    Emerald, DeepBlue
-                                )
+                                colors = listOf(Emerald, DeepBlue)
                             )
                         )
                 )
@@ -198,64 +167,49 @@ fun SignInScreen(navController: NavHostController) {
                     text = "Sign in to access your dashboard.",
                     style = MaterialTheme.typography.bodyLarge,
                     color = TextSecondary,
-                    fontSize = 16.sp,
-                    letterSpacing = 0.3.sp
+                    fontSize = 16.sp
                 )
             }
 
             Spacer(modifier = Modifier.height(48.dp))
 
-            // Email Field with animation
-            Box(
-                modifier = Modifier
-                    .scale(fieldAnimations[0].value)
-                    .alpha(fieldAnimations[0].value)
-                    .fillMaxWidth()
-            ) {
-                SignInTextField(
-                    value = email,
-                    onValueChange = { email = it },
-                    label = "Email Address",
-                    icon = Icons.Default.Email,
-                    keyboardType = KeyboardType.Email,
-                    iconColor = DeepBlue,
-                    isValid = email.isEmpty() || isValidEmail,
-                    errorMessage = "Please enter a valid email"
-                )
-            }
+            // Email
+            SignInTextField(
+                value = email,
+                onValueChange = { email = it },
+                label = "Email Address",
+                icon = Icons.Default.Email,
+                keyboardType = KeyboardType.Email,
+                iconColor = DeepBlue,
+                isValid = email.isEmpty() || isValidEmail,
+                errorMessage = "Please enter a valid email"
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Password Field with animation
-            Box(
-                modifier = Modifier
-                    .scale(fieldAnimations[1].value)
-                    .alpha(fieldAnimations[1].value)
-                    .fillMaxWidth()
-            ) {
-                SignInTextField(
-                    value = password,
-                    onValueChange = { password = it },
-                    label = "Password",
-                    icon = Icons.Default.Lock,
-                    isPassword = true,
-                    isVisible = passwordVisible,
-                    onVisibilityChange = { passwordVisible = !passwordVisible },
-                    iconColor = SlateBlue,
-                    isValid = password.isEmpty() || isValidPassword,
-                    errorMessage = "Password must be at least 6 characters"
-                )
-            }
+            // Password
+            SignInTextField(
+                value = password,
+                onValueChange = { password = it },
+                label = "Password",
+                icon = Icons.Default.Lock,
+                isPassword = true,
+                isVisible = passwordVisible,
+                onVisibilityChange = { passwordVisible = !passwordVisible },
+                iconColor = SlateBlue,
+                isValid = password.isEmpty() || isValidPassword,
+                errorMessage = "Password must be at least 6 characters"
+            )
 
             // Forgot Password
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .alpha(fieldAnimations[1].value)
-                    .padding(top = 8.dp), horizontalArrangement = Arrangement.End
+                    .padding(top = 8.dp),
+                horizontalArrangement = Arrangement.End
             ) {
                 TextButton(
-                    onClick = { /* Handle forgot password */ },
+                    onClick = { },
                     colors = ButtonDefaults.textButtonColors(
                         contentColor = Emerald
                     )
@@ -266,72 +220,56 @@ fun SignInScreen(navController: NavHostController) {
                         modifier = Modifier.size(16.dp)
                     )
                     Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        text = "Forgot Password?",
-                        style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.Medium
-                    )
+                    Text("Forgot Password?")
                 }
             }
 
             Spacer(modifier = Modifier.height(32.dp))
 
             // Sign In Button
-            Box(
+            Button(
+                onClick = {
+                    navController.navigate(Screen.Home.route)
+                },
                 modifier = Modifier
-                    .scale(buttonScale.value)
                     .fillMaxWidth()
+                    .height(56.dp),
+                shape = RoundedCornerShape(16.dp),
+                enabled = isValidEmail && isValidPassword,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = DeepBlue,
+                    contentColor = White,
+                    disabledContainerColor = DeepBlue.copy(alpha = 0.3f),
+                    disabledContentColor = White.copy(alpha = 0.5f)
+                )
             ) {
-                Button(
-                    onClick = {
-                        navController.navigate(Screen.Home.route)
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
-                    shape = RoundedCornerShape(16.dp),
-                    enabled = isValidEmail && isValidPassword,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = DeepBlue,
-                        contentColor = White,
-                        disabledContainerColor = DeepBlue.copy(alpha = 0.3f),
-                        disabledContentColor = White.copy(alpha = 0.5f)
-                    )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Text(
-                            text = "Sign In",
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = 18.sp,
-                            letterSpacing = 0.5.sp
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Icon(
-                            Icons.AutoMirrored.Filled.ArrowForward,
-                            contentDescription = null,
-                            modifier = Modifier.size(20.dp)
-                        )
-                    }
+                    Text(
+                        text = "Sign In",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Icon(
+                        Icons.AutoMirrored.Filled.ArrowForward,
+                        contentDescription = null
+                    )
                 }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Sign Up Link
+            // Sign Up
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .alpha(fieldAnimations[1].value),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = "Don't have an account?",
-                    style = MaterialTheme.typography.bodyMedium,
                     color = TextSecondary
                 )
                 TextButton(
@@ -340,47 +278,32 @@ fun SignInScreen(navController: NavHostController) {
                         contentColor = Emerald
                     )
                 ) {
-                    Text(
-                        text = "Sign Up", fontWeight = FontWeight.ExtraBold, fontSize = 16.sp
-                    )
+                    Text("Sign Up", fontWeight = FontWeight.Bold)
                 }
             }
 
-            // Demo credentials hint
             Spacer(modifier = Modifier.height(24.dp))
+
+            // Demo credentials
             Surface(
                 color = Color.White,
                 shape = RoundedCornerShape(12.dp),
                 border = BorderStroke(1.dp, Color.LightGray.copy(alpha = 0.3f)),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .alpha(0.8f)
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Column(
-                    modifier = Modifier.padding(12.dp)
-                ) {
+                Column(modifier = Modifier.padding(12.dp)) {
                     Text(
                         text = "Demo Credentials:",
-                        style = MaterialTheme.typography.labelSmall,
                         color = DeepBlue,
                         fontWeight = FontWeight.Bold
                     )
-                    Text(
-                        text = "Email: lawyer@example.com",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = TextSecondary
-                    )
-                    Text(
-                        text = "Password: password123",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = TextSecondary
-                    )
+                    Text("Email: lawyer@example.com", color = TextSecondary)
+                    Text("Password: password123", color = TextSecondary)
                 }
             }
         }
     }
 }
-
 @Composable
 fun SignInTextField(
     value: String,
